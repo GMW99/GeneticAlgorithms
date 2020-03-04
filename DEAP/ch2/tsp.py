@@ -28,7 +28,10 @@ class TravellingSalesmanProblem:
         
     
     def __len__(self):
-        pass
+        """
+        :return: the length of TSP (number of cities)
+        """
+        return self.tspSize
     
     def __initData(self):
         pass
