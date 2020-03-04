@@ -34,7 +34,22 @@ class TravellingSalesmanProblem:
         return self.tspSize
     
     def __initData(self):
-        pass
+        """Reads the serialized data, and if not available - calls __create_data() to prepare it
+        """
+
+        # attempt to read serialized data
+        try:
+            self.locations = pickle.load(open(os.path.join("tsp-data", self.name + "-loc.pickle"), "rb"))
+            self.distances = pickle.load(open(os.path.join("tsp-data", self.name + "-dist.pickle"), "rb"))
+        except (OSError, IOError):
+            pass
+
+        # serailized data not found - create the data instead
+        if not self.locations or not self.distances:
+            self.__createData()
+
+        # set the problem 'size'
+        self.tspSize = len(self.locations)
     
     def __createData(self):
         """
