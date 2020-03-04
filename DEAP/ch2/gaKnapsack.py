@@ -1,7 +1,7 @@
 from deap import base
 from deap import creator
 from deap import tools
-from deap import algortihms
+from deap import algorithms
 
 import random
 import numpy
@@ -58,3 +58,45 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("mate", tools.cxTwoPoint)
 
 toolbox.register("mutate", tools.mutFlipBit, indpb=1.0/len(knapsack))
+
+def main():
+
+    # create intial population
+    population = toolbox.populationCreator(n=POPULATION_SIZE)
+
+    # setup stats object
+    stats = tools.Statistics(lambda ind: ind.fitness.values)
+
+    stats.register("max", numpy.max)
+    stats.register("avg", numpy.mean)
+
+    hof = tools.HallOfFame(HALL_OF_FAME_SIZE)
+
+    # run the algorithm
+
+    population, logbook = algorithms.eaSimple(population, toolbox, cxpb=P_CROSSOVER, mutpb=P_MUTATATION,
+                                            ngen=MAX_GENERATIONS, stats=stats, halloffame=hof, verbose=True)
+
+    best = hof.items[0]
+    print("-- Best Ever Individual = ", best)
+    print("-- Best Ever Fitness = ", best.fitness.values[0])
+
+    print("-- Knapsack Items = ")
+    knapsack.printItems(best)
+
+    # extract statistics:
+    maxFitnessValues, meanFitnessValues = logbook.select("max", "avg")
+
+    # plot statistics:
+    sns.set_style("whitegrid")
+    plt.plot(maxFitnessValues, color='red', label="Max fitness")
+    plt.plot(meanFitnessValues, color='green', label="Average fitness")
+    plt.legend()
+    plt.xlabel('Generation')
+    plt.ylabel('Max / Average Fitness')
+    plt.title('Max and Average fitness over Generations')
+    plt.show()
+
+if __name__ == "__main__":
+    main()
+
