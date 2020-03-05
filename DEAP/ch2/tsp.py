@@ -115,13 +115,14 @@ class TravelingSalesmanProblem:
             distance += self.distances[indices[i]][indices[i + 1]]
         return distance
     
-    def plotData(self,indices):
+    def plotData(self,indices,title):
         """
         plots the path described by the given indices of the cities
         :param indices: A list of ordered city indices describing the given path.
+        :param title: A title to be displayed on the graph
         :return: the resulting plot
         """
-
+        plt.title(name)
         # plot the dots representing the cities
         plt.scatter(*zip(*self.locations), marker='.', color='red')
 
