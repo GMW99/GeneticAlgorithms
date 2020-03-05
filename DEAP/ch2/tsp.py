@@ -9,7 +9,7 @@ from urllib.request import urlopen
 
 import matplotlib.pyplot as plt
 
-class TravellingSalesmanProblem:
+class TravelingSalesmanProblem:
 
     def __init__(self,name):
         """
@@ -61,7 +61,7 @@ class TravellingSalesmanProblem:
         self.locations = []
 
         with urlopen("http://elib.zib.de/pub/mp-testdata/tsp/tsplib/tsp/" + self.name + ".tsp") as file:
-            reader = cvs.reader(codecs.iterdecode(file,'utf-8', delimiter=" ", skipinitialspace=True))
+            reader = csv.reader(codecs.iterdecode(file,'utf-8', delimiter=" ", skipinitialspace=True))
 
             # skip lines till it finds an line including
             for row in reader:
@@ -102,8 +102,34 @@ class TravellingSalesmanProblem:
             pickle.dump(self.locations, open(os.path.join("tsp-data", self.name + "-loc.pickle"), "wb"))
             pickle.dump(self.distances, open(os.path.join("tsp-data", self.name + "-dist.pickle"), "wb"))
 
-    def getTotalDistance(self):
-        pass
+    def getTotalDistance(self, indices):
+        """Calculates the total distance of the path described by the given indices.
+        :param indices: A list of ordered city indices describing the given path.
+        :return: total distance of the path described by the given indices.
+        """
+        # distance between the last and first city
+        distance = self.distances[indices[-1]][indices[0]]
+
+        # add the distance between each pair of consequtive cities
+        for i in range(len(indices) - 1):
+            distance += self.distances[indices[i]][indices[i + 1]]
+        return distance
     
-    def plotData(self):
-        pass
+    def plotData(self,indices):
+        """
+        plots the path described by the given indices of the cities
+        :param indices: A list of ordered city indices describing the given path.
+        :return: the resulting plot
+        """
+
+        # plot the dots representing the cities
+        plt.scatter(*zip(*self.locations), marker='.', color='red')
+
+        # create a list of the corresponding city locations
+        locs = [self.locations[i] for i in indices]
+        locs.append(locs[0])
+
+        # plot a line between each pair of consequtive cities
+        plt.plot(*zip(*locs), linestyle='-', color='blue')
+
+        return plt
