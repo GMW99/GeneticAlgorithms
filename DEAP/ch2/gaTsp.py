@@ -31,3 +31,24 @@ random.seed(RANDOM_SEED)
 
 toolbox = base.Toolbox()
 
+# create an operator that randomly shuffles indices
+toolbox.register("randomOrder", random.sample, range(len(tsp)), len(tsp))
+
+# define a single objective, minimizing fitness strategy
+creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+
+# create the Individual class based on list
+creator.create("Individual", array.array, typecode='i', fitness=creator.FitnessMin)
+
+# create the individual operator to fill up an Individual instance
+toolbox.register("individualCreator", tools.initIterate, creator.Individual, toolbox.randomOrder)
+
+# create the population operator to generate a list of individuals
+toolbox.register("populationCreator", tools.initRepeat, list, toolbox.individualCreator)
+
+
+# fitness calculator, calcuates the total distance of the list represented
+def tspDistance(individual):
+    return tsp.getTotalDistance(individual), # return tuple
+
+toolbox.register("evaluate", tspDistance)
