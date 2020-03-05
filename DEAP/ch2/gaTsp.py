@@ -9,7 +9,7 @@ import array
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-
+import elitism
 import tsp
 
 # problem constants:
@@ -18,15 +18,15 @@ TSP_NAME = "bayg29"
 tsp = tsp.TravelingSalesmanProblem(TSP_NAME)
 
 # Algortihm Constants:
-POPULATION_SIZE = 300
+POPULATION_SIZE = 1000
 P_CROSSOVER = 0.9 # prob of crossover
 P_MUTATION = 0.1 # prob of mutation
 MAX_GENERATIONS = 500
-HALL_OF_FAME_SIZE = 1
+HALL_OF_FAME_SIZE = 100
 
 # Setting the seed so we get the same result each time
-RANDOM_SEED = 42
-random.seed(RANDOM_SEED)
+# RANDOM_SEED = 42
+# random.seed(RANDOM_SEED)
 
 # toolbox set up
 
@@ -56,7 +56,7 @@ toolbox.register("evaluate", tspDistance)
 
 # Genetic operators 
 
-toolbox.register("select", tools.selTournament, tournsize=4)
+toolbox.register("select", tools.selTournament, tournsize=2)
 toolbox.register("mate", tools.cxOrdered)
 toolbox.register("mutate", tools.mutShuffleIndexes, indpb=1.0/len(tsp))
 
@@ -75,7 +75,7 @@ def main():
     hof = tools.HallOfFame(HALL_OF_FAME_SIZE)
 
     # perform the Genetic Algorithm flow with hof feature added
-    population, logbook = algorithms.eaSimple(population, toolbox, cxpb=P_CROSSOVER, mutpb=P_MUTATION,
+    population, logbook = elitism.eaSimpleWithElitism(population, toolbox, cxpb=P_CROSSOVER, mutpb=P_MUTATION,
                                               ngen=MAX_GENERATIONS, stats=stats, halloffame=hof, verbose=True)
 
     # print best individual info
