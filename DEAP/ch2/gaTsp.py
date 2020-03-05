@@ -52,3 +52,9 @@ def tspDistance(individual):
     return tsp.getTotalDistance(individual), # return tuple
 
 toolbox.register("evaluate", tspDistance)
+
+# Genetic operators 
+
+toolbox.register("select", tools.selTournament, tournsize=3)
+toolbox.register("mate", tools.cxOrdered)
+toolbox.register("mutate", tools.mutShuffleIndexes, indpb=1.0/len(tsp))
