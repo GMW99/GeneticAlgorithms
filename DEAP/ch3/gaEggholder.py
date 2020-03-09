@@ -46,3 +46,10 @@ toolbox.register("individualCreator", tools.initIterate, creator.Individual, too
 
 # create the population operator to generate a list of individuals
 toolbox.register("populationCreator", tools.initRepeat, list, toolbox.individualCreator)
+
+def eggholder(individual):
+    x = individual[0]
+    y = individual[1]
+    f = -(y+47)*np.sin(np.sqrt(np.abs(x/2+(y+47))))-x*np.sin(np.sqrt(np.abs(x-(y+47))))
+    return f,
+toolbox.register("evaluate", eggholder)
