@@ -58,3 +58,43 @@ toolbox.register("evaluate", eggholder)
 toolbox.register("select", tools.selTournament, tournsize=2)
 toolbox.register("mate", tools.cxSimulatedBinaryBounded, low=BOUND_LOW, up=BOUND_UP, eta=CROWDING_FACTOR)
 toolbox.register("mutate", tools.mutPolynomialBounded, low=BOUND_LOW, up=BOUND_UP, eta=CROWDING_FACTOR, indpb=1.0/DIMENTIONS)
+
+# Genetic Algorithm
+def main():
+
+    # create initial population
+    population = toolbox.populationCreator(n=POPULATION_SIZE)
+
+    # prepare the statistics object
+    stats = tools.Statistics(lambda ind: ind.fitness.values)
+    stats.register("min", np.min)
+    stats.register("avg", np.mean)
+
+    # define the hall-of-fame object
+    hof = tools.HallOfFame(HALL_OF_FAME_SIZE)
+
+    # perform the Genetic Algorithm flow with elitism
+    population, logbook = elitism.eaSimpleWithElitism(population, toolbox, cxpb=P_CROSSOVER, mutpb=P_MUTATION,
+                                              ngen=MAX_GENERATIONS, stats=stats, halloffame=hof, verbose=True)
+
+    # print info for best solution found
+    best = hof.items[0]
+    print("-- Best Individual = ", best)
+    print("-- Best Fitness = ", best.fitness.values[0])
+
+    # get statistics
+    minFitnessValues, meanFitnessValues = logbook.select("min", "avg")
+
+    # plot statistics
+    sns.set_style("whitegrid")
+    plt.plot(minFitnessValues, color='red')
+    plt.plot(meanFitnessValues, color='green')
+    plt.xlabel('Generation')
+    plt.ylabel('Min / Average Fitness')
+    plt.title('Min and Average fitness over Generations')
+
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
