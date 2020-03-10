@@ -19,20 +19,20 @@ BOUND_LOW, BOUND_UP = -512,512
 # GA constants
 
 POPULATION_SIZE = 300
-P_CROSSOVER = 0.9 # prob of crossover
-P_MUTATION = 0.1 # prob of mutation
+P_CROSSOVER = 0.8 # prob of crossover
+P_MUTATION = 0.15 # prob of mutation
 MAX_GENERATIONS = 300
-HALL_OF_FAME_SIZE = 30
+HALL_OF_FAME_SIZE = 10
 CROWDING_FACTOR = 20.0
 
 # Setting the seed so we get the same result each time
-RANDOM_SEED = 42
-random.seed(RANDOM_SEED)
+# RANDOM_SEED = 42
+# random.seed(RANDOM_SEED)
 
 toolbox = base.Toolbox()
 
 def randomFloat(low,up,dimention):
-    return [random.uniform(1,u) for 1, u in zip([low]* dimention, [up]*dimention)]
+    return [random.uniform(l,u) for l, u in zip([low]* dimention, [up]*dimention)]
 toolbox.register("floatAttr", randomFloat,BOUND_LOW, BOUND_UP, DIMENTIONS)
 
 # define a single objective, minimizing fitness strategy
@@ -53,3 +53,8 @@ def eggholder(individual):
     f = -(y+47)*np.sin(np.sqrt(np.abs(x/2+(y+47))))-x*np.sin(np.sqrt(np.abs(x-(y+47))))
     return f,
 toolbox.register("evaluate", eggholder)
+
+# genetic operators:
+toolbox.register("select", tools.selTournament, tournsize=2)
+toolbox.register("mate", tools.cxSimulatedBinaryBounded, low=BOUND_LOW, up=BOUND_UP, eta=CROWDING_FACTOR)
+toolbox.register("mutate", tools.mutPolynomialBounded, low=BOUND_LOW, up=BOUND_UP, eta=CROWDING_FACTOR, indpb=1.0/DIMENTIONS)
