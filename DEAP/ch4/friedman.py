@@ -29,7 +29,7 @@ class Friedman1:
         """
 
 
-        self.numFeatures = setNumFeatures(numFeatures)
+        self.numFeatures = self.setNumFeatures(numFeatures)
         self.numSamples = numSamples
         self.randomSeed = randomSeed
         # create data
@@ -61,4 +61,16 @@ class Friedman1:
         and vis versa for 1. 
         :return: the MSE of the regressor when using the features in zeroOneList.
         """
+
+        # drop the columns of the training and test sets that 
+        # correspond to unselected features        
         
+        zeroIndices = [i for i, n in enumerate(zeroOneList) if n ==0]
+        currentXTrain = np.delete(self.xTrain,zeroIndices, 1)
+        currentXTest = np.delete(self.xTest, zeroIndices, 1)
+    
+        # train the regerssor 
+        
+        self.regressor.fit(currentXTrain, self.yTrain)
+        prediction = self.regressor.predict(currentXTest)
+        return mean_squared_error(self.yTest, prediction)
