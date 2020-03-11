@@ -28,4 +28,30 @@ class Zoo:
         self.kfold = model_selection.KFold(n_splits=self.NUM_FOLDS, random_state=self.randomSeed)
 
         self.classifier = DecisionTreeClassifier(random_state=self.randomSeed)
+    def __len__(self):
+        """
+        :return: The number of features used in the classification.
+        """
+        return self.x.shape[1]
     
+    def getMeanAccuracy(self,zeroOneList):
+        """
+        returns the mean accuracy of the classifier, which is calcualted for the test set,
+        after the training using the features selected in the zeroOneList.
+        :param zeroOneList: a list of of 0's or 1's that coresponed to features in the dataset. Where 0 indicated not used
+        and vis versa for 1. 
+        :return: the mean accurary of the classifier when using the features in zeroOneList.
+        """
+
+        # drop the columns of the training and test sets that 
+        # correspond to unselected features.
+
+        zeroIndices = [i for i, n in enumerate(zeroOneList) if n ==0]
+ 
+        currentXTrain = self.x.drop(self.x.columns[zeroIndices], 1)
+    
+        # train the regerssor 
+        cvResults = model_selection.cross_val_score(self.classifier, currentXTrain, self.y, cv=self.kfold, scoring='accuracy')
+
+        return cvResults.mean()
+        
