@@ -49,6 +49,16 @@ class Friedman1:
 
     def __len__(self):
         """
-        :return: the amount of features
+        :return: the amount of features.
         """
         return self.numFeatures
+
+    def getMSE(self,zeroOneList):
+        """
+        returns the mean squared error (MSE) of the regressor, which is calcualted for the test set,
+        after the training using the features selected in the zeroOneList.
+        :param zeroOneList: a list of of 0's or 1's that coresponed to features in the dataset. Where 0 indicated not used
+        and vis versa for 1. 
+        :return: the MSE of the regressor when using the features in zeroOneList.
+        """
+        
