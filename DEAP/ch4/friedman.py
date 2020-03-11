@@ -46,3 +46,9 @@ class Friedman1:
             return 5
         else:
             return numFeatures
+
+    def __len__(self):
+        """
+        :return: the amount of features
+        """
+        return self.numFeatures
